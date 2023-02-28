@@ -111,21 +111,41 @@
       const buttonIdx = +btn.target.id.split('button-')[1];
 
       changeSlide(buttonIdx);
+      restartTimer();
+
       currentActiveIndex = buttonIdx;
     });
   });
 
-  arrowLeft.addEventListener('click', () =>
+  arrowLeft.addEventListener('click', () => {
+    changeToPreviousSlide();
+    restartTimer();
+  });
+  arrowRight.addEventListener('click', () => {
+    changeToNextSlide();
+    restartTimer();
+  });
+
+  let changeSlideAutomaticly = setInterval(() => {
+    changeToNextSlide();
+  }, 3000);
+
+  function restartTimer() {
+    clearInterval(changeSlideAutomaticly);
+    changeSlideAutomaticly = setInterval(changeToNextSlide, 3000);
+  }
+
+  function changeToPreviousSlide() {
     currentActiveIndex - 1 < 0
       ? (changeSlide(legendButtons.length - 1), (currentActiveIndex = legendButtons.length - 1))
-      : (changeSlide(currentActiveIndex - 1), (currentActiveIndex -= 1))
-  );
+      : (changeSlide(currentActiveIndex - 1), (currentActiveIndex -= 1));
+  }
 
-  arrowRight.addEventListener('click', () =>
+  function changeToNextSlide() {
     currentActiveIndex + 1 > legendButtons.length - 1
       ? (changeSlide(0), (currentActiveIndex = 0))
-      : (changeSlide(currentActiveIndex + 1), (currentActiveIndex += 1))
-  );
+      : (changeSlide(currentActiveIndex + 1), (currentActiveIndex += 1));
+  }
 
   function changeSlide(newActiveIndex: number) {
     const currentSlide = document.getElementById(`slide-${currentActiveIndex}`);
