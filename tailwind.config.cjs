@@ -32,6 +32,12 @@ module.exports = {
         hide: 'hide 0.5s 0.1s forwards',
         reveal: 'reveal 0.3s 0.5s forwards',
       },
+      backgroundImage: {
+        slide1: "url('/public/slider1.jpeg')",
+        slide2: "url('/public/slider2.jpg')",
+        slide3: "url('/public/slider3.jpg')",
+        slide4: "url('/public/slider4.jpg')",
+      },
     },
   },
   plugins: [],
