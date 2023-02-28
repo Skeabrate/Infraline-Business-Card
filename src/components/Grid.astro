@@ -1,0 +1,50 @@
+---
+import ImageWithOrnament from './ImageWithOrnament.astro';
+
+const categories = [
+  {
+    title: 'Sauny Fińskie',
+    src: '/finskie.jpg',
+  },
+  {
+    title: 'Sauny Infrared',
+    src: '/infrared.jpg',
+  },
+  {
+    title: 'Sauny Combi',
+    src: '/combi.jpg',
+  },
+  {
+    title: 'Aranżacje Solne',
+    src: '/aranzacjesolne.jpg',
+  },
+  {
+    title: 'Sauny Ogrodowe',
+    src: '/ogrodowe.jpg',
+  },
+  {
+    title: 'Wyposażenie do saun',
+    src: '/wyposazeniedodatkowe.jpg',
+  },
+];
+---
+
+<section class='mt-6 md:mt-12 lg:mt-16'>
+  <h2 class='text-2xl font-bold lg:text-3xl text-center lg:mb-2'>Oferta:</h2>
+  <h3 class='text-center'>W naszej bogatej ofercie posiadamy:</h3>
+  <ul
+    class='grid [@media(min-width:440px)]:grid-cols-2 [@media(min-width:768px)]:grid-cols-3 gap-x-6 gap-y-8 md:gap-x-8 md:gap-y-12 mt-4 md:mt-8'
+  >
+    {
+      categories.map(({ title, src }) => (
+        <li class='relative'>
+          <ImageWithOrnament
+            src={src}
+            title={title}
+          />
+          <h4 class='font-bold absolute bottom-0 left-0'>{title}</h4>
+        </li>
+      ))
+    }
+  </ul>
+</section>
