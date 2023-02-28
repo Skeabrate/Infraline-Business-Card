@@ -1,9 +1,152 @@
-<div
-  class='w-full bg-slide1 h-[250px] sm:h-[400px] md:h-[500px] lg:h-[70vh] lg:min-h-[500px] bg-orange-600 flex flex-col text-center items-center justify-center bg-no-repeat bg-center bg-cover'
->
+<div class='relative w-full h-[250px] sm:h-[400px] md:h-[500px] lg:h-[70vh] lg:min-h-[500px]'>
+  <button
+    id='arrow-left'
+    class='group absolute z-10 top-1/2 left-0 -translate-y-1/2 sm:flex w-24 h-24 items-center justify-center'
+  >
+    <svg
+      width='32'
+      height='32'
+      viewBox='0 0 14 20'
+      xmlns='http://www.w3.org/2000/svg'
+      class='group-hover:scale-110 transition-all duration-200'
+      ><path
+        d='M11 1 3 9l8 8'
+        stroke='#ffffffea'
+        stroke-width='3'
+        fill='none'
+        fill-rule='evenodd'
+      ></path></svg
+    >
+  </button>
+
+  <button
+    id='arrow-right'
+    class='group absolute z-10 top-1/2 right-0 -translate-y-1/2 sm:flex w-24 h-24 items-center justify-center'
+  >
+    <svg
+      width='32'
+      height='32'
+      viewBox='0 0 14 20'
+      xmlns='http://www.w3.org/2000/svg'
+      class='group-hover:scale-110 transition-all duration-200'
+      ><path
+        d='m2 1 8 8-8 8'
+        stroke='#ffffffea'
+        stroke-width='3'
+        fill='none'
+        fill-rule='evenodd'
+      ></path></svg
+    >
+  </button>
+
+  <div
+    id='slide-0'
+    class='bg-orange-600 flex flex-col text-center items-center justify-center absolute inset-0 opacity-1 w-full h-full bg-slide1 bg-no-repeat bg-center bg-cover transition-opacity duration-1000'
+  >
+    <div class='px-4'>
+      <h2 class='text-white text-2xl md:text-4xl font-bold mb-2 md:mb-4'>
+        Sauny Fińskie - Infrared - Combi <span class='block mt-2'>Infraline</span>
+      </h2>
+      <p class='text-white text-xl md:text-2xl'>Projekt - Produkcja - Montaż</p>
+    </div>
+  </div>
+
+  <div
+    id='slide-1'
+    class='bg-orange-600 flex flex-col text-center items-center justify-center absolute inset-0 opacity-0 w-full h-full bg-slide2 bg-no-repeat bg-center bg-cover transition-opacity duration-1000'
+  >
+    <div class='px-4'>
+      <h2 class='text-white text-2xl md:text-4xl font-bold mb-2 md:mb-4'>
+        Lider wśród producentów saun
+      </h2>
+      <p class='text-white text-xl md:text-2xl'>Niemal 20 lat na rynku europejskim</p>
+    </div>
+  </div>
+
+  <div
+    id='slide-2'
+    class='bg-orange-600 flex flex-col text-center items-center justify-center absolute inset-0 opacity-0 w-full h-full bg-slide3 bg-no-repeat bg-center bg-cover transition-opacity duration-1000'
+  >
+    <div class='px-4'>
+      <h2 class='text-white text-2xl md:text-4xl font-bold mb-2 md:mb-4'>
+        Komnaty solne i tężnie solankowe
+      </h2>
+      <p class='text-white text-xl md:text-2xl'>Nadmorski mikroklimat Infraline</p>
+    </div>
+  </div>
+
+  <div
+    id='slide-3'
+    class='bg-orange-600 flex flex-col text-center items-center justify-center absolute inset-0 opacity-0 w-full h-full bg-slide4 bg-no-repeat bg-center bg-cover transition-opacity duration-1000'
+  >
+    <div class='px-4'>
+      <h2 class='text-white text-2xl md:text-4xl font-bold mb-2 md:mb-4'>Sauny domowe Infraline</h2>
+      <p class='text-white text-xl md:text-2xl'>Relaks, oczyszczanie, odchudzanie we własnym SPA</p>
+    </div>
+  </div>
 </div>
-{[1, 2, 3, 4].map((dot) => <button>dot</button>)}
+
+<div class='flex gap-1 mx-auto mt-5 w-fit'>
+  {
+    [0, 1, 2, 3].map((dot) => (
+      <button
+        id={`button-${dot}`}
+        class={`legend w-2 h-2 rounded-full ${
+          !dot && 'activeButton'
+        } bg-gray-300 hover:bg-red-700 `}
+      />
+    ))
+  }
+</div>
 
 <script>
-  function changeSlide() {}
+  const legendButtons = document.querySelectorAll('.legend');
+  const arrowLeft = document.getElementById('arrow-left');
+  const arrowRight = document.getElementById('arrow-right');
+
+  let currentActiveIndex = 0;
+
+  legendButtons.forEach((button) => {
+    button.addEventListener('click', (btn) => {
+      const buttonIdx = +btn.target.id.split('button-')[1];
+
+      changeSlide(buttonIdx);
+      currentActiveIndex = buttonIdx;
+    });
+  });
+
+  arrowLeft.addEventListener('click', () =>
+    currentActiveIndex - 1 < 0
+      ? (changeSlide(legendButtons.length - 1), (currentActiveIndex = legendButtons.length - 1))
+      : (changeSlide(currentActiveIndex - 1), (currentActiveIndex -= 1))
+  );
+
+  arrowRight.addEventListener('click', () =>
+    currentActiveIndex + 1 > legendButtons.length - 1
+      ? (changeSlide(0), (currentActiveIndex = 0))
+      : (changeSlide(currentActiveIndex + 1), (currentActiveIndex += 1))
+  );
+
+  function changeSlide(newActiveIndex: number) {
+    const currentSlide = document.getElementById(`slide-${currentActiveIndex}`);
+    const nextSlide = document.getElementById(`slide-${newActiveIndex}`);
+
+    currentSlide.style.opacity = 0;
+    nextSlide.style.opacity = 1;
+    handleActiveButton(newActiveIndex);
+  }
+
+  function handleActiveButton(newIndex: number) {
+    const currentActiveButton = document.getElementById(`button-${currentActiveIndex}`);
+    const nextActiveButton = document.getElementById(`button-${newIndex}`);
+
+    currentActiveButton.classList.remove('activeButton');
+    nextActiveButton.classList.add('activeButton');
+  }
 </script>
+
+<style>
+  .activeButton {
+    background-color: #b91c1c;
+  }
+</style>
