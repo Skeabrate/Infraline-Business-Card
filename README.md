@@ -1,3 +1,3 @@
 ## Infraline Busines Card Page
 
-https://infraline.eu/
+https://infraline.com.pl/
