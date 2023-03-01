@@ -1,7 +1,7 @@
 <div class='relative w-full h-[250px] sm:h-[400px] md:h-[500px] lg:h-[70vh] lg:min-h-[500px]'>
   <button
     id='arrow-left'
-    class='group absolute z-10 top-1/2 left-0 -translate-y-1/2 sm:flex w-24 h-24 items-center justify-center'
+    class='group hidden sm:visible absolute z-10 top-1/2 left-0 -translate-y-1/2 sm:flex w-24 h-24 items-center justify-center'
   >
     <svg
       width='32'
@@ -21,7 +21,7 @@
 
   <button
     id='arrow-right'
-    class='group absolute z-10 top-1/2 right-0 -translate-y-1/2 sm:flex w-24 h-24 items-center justify-center'
+    class='group hidden sm:visible absolute z-10 top-1/2 right-0 -translate-y-1/2 sm:flex w-24 h-24 items-center justify-center'
   >
     <svg
       width='32'
@@ -104,35 +104,50 @@
   const arrowLeft = document.getElementById('arrow-left');
   const arrowRight = document.getElementById('arrow-right');
 
-  let currentActiveIndex = 0;
+  let currentActiveIndex = 0,
+    isThrottleActive = false;
 
-  legendButtons.forEach((button) => {
-    button.addEventListener('click', (btn) => {
-      const buttonIdx = +btn.target.id.split('button-')[1];
+  legendButtons.forEach((button) =>
+    button.addEventListener(
+      'click',
+      throttle((btn: any) => {
+        const buttonIdx = +btn.target.id.split('button-')[1];
 
-      changeSlide(buttonIdx);
-      restartTimer();
+        changeSlide(buttonIdx);
+        restartAutomaticSlidesChange();
 
-      currentActiveIndex = buttonIdx;
-    });
-  });
+        currentActiveIndex = buttonIdx;
+      })
+    )
+  );
 
-  arrowLeft.addEventListener('click', () => {
-    changeToPreviousSlide();
-    restartTimer();
-  });
-  arrowRight.addEventListener('click', () => {
-    changeToNextSlide();
-    restartTimer();
-  });
+  arrowLeft?.addEventListener(
+    'click',
+    throttle(() => {
+      changeToPreviousSlide();
+      restartAutomaticSlidesChange();
+    })
+  );
 
-  let changeSlideAutomaticly = setInterval(() => {
-    changeToNextSlide();
-  }, 3000);
+  arrowRight?.addEventListener(
+    'click',
+    throttle(() => {
+      changeToNextSlide();
+      restartAutomaticSlidesChange();
+    })
+  );
 
-  function restartTimer() {
-    clearInterval(changeSlideAutomaticly);
-    changeSlideAutomaticly = setInterval(changeToNextSlide, 3000);
+  let startAutomaticSlidesChange = automaticSlidesChange();
+
+  function restartAutomaticSlidesChange() {
+    clearInterval(startAutomaticSlidesChange);
+    startAutomaticSlidesChange = automaticSlidesChange();
+  }
+
+  function automaticSlidesChange() {
+    return setInterval(() => {
+      changeToNextSlide();
+    }, 3500);
   }
 
   function changeToPreviousSlide() {
@@ -151,8 +166,10 @@
     const currentSlide = document.getElementById(`slide-${currentActiveIndex}`);
     const nextSlide = document.getElementById(`slide-${newActiveIndex}`);
 
-    currentSlide.style.opacity = 0;
-    nextSlide.style.opacity = 1;
+    if (!currentSlide || !nextSlide) return;
+
+    currentSlide.style.opacity = '0';
+    nextSlide.style.opacity = '1';
     handleActiveButton(newActiveIndex);
   }
 
@@ -160,8 +177,21 @@
     const currentActiveButton = document.getElementById(`button-${currentActiveIndex}`);
     const nextActiveButton = document.getElementById(`button-${newIndex}`);
 
-    currentActiveButton.classList.remove('activeButton');
-    nextActiveButton.classList.add('activeButton');
+    currentActiveButton?.classList.remove('activeButton');
+    nextActiveButton?.classList.add('activeButton');
+  }
+
+  function throttle(callback: (...args: any[]) => void) {
+    return function (...args: any[]) {
+      if (!isThrottleActive) {
+        callback(...args);
+        isThrottleActive = true;
+
+        setTimeout(function () {
+          isThrottleActive = false;
+        }, 400);
+      }
+    };
   }
 </script>
 
